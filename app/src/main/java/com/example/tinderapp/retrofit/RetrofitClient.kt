@@ -1,7 +1,8 @@
 package com.example.tinderapp.retrofit
 
+import androidx.databinding.library.BuildConfig
 import okhttp3.OkHttpClient
-import com.example.tinderapp.BuildConfig
+
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import retrofit2.Retrofit
@@ -10,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    const val MainServer = "http://api.drfriday.in/api/user/"
+    const val MainServer = "https://api.simplifiedcoding.in/course-apis/tinder/"
 
     val retrofitClient: Retrofit.Builder by lazy {
 
