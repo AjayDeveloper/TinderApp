@@ -6,6 +6,8 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+
+
 interface ApiInterface {
     @GET("services")
     fun getServices(): Call<ServicesSetterGetter>
@@ -13,7 +15,10 @@ interface ApiInterface {
     @GET("profiles")
     fun getProfiles(): Call<List<Profile>>
 
+
+
     companion object {
+
         operator fun invoke(): ApiInterface {
             return Retrofit.Builder()
                 .baseUrl("https://api.simplifiedcoding.in/course-apis/tinder/")

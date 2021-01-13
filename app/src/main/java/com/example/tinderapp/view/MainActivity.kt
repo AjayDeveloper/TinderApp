@@ -2,6 +2,7 @@ package com.example.tinderapp.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
             override fun onResponse(call: Call<List<Profile>>, response: Response<List<Profile>>) {
                 response.body()?.let {
+                    Log.d("test",response.body().toString())
                     adapter.setProfiles(it)
                 }
             }
