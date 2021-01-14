@@ -1,6 +1,5 @@
 package com.example.tinderapp.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,20 +8,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.room.Room
 import com.example.tinderapp.adapter.FavoriteCustomAdapter
+import com.example.tinderapp.database.AppDb
 import com.example.tinderapp.databinding.ActivityMainBinding
 import com.example.tinderapp.model.Profile
 import com.example.tinderapp.retrofit.ApiInterface
 import com.example.tinderapp.viewmodel.MainActivityViewModel
 import com.facebook.drawee.backends.pipeline.Fresco
-import com.yuyakaido.android.cardstackview.CardStackLayoutManager
-import com.yuyakaido.android.cardstackview.CardStackListener
-import com.yuyakaido.android.cardstackview.Direction
-import com.yuyakaido.android.cardstackview.SwipeableMethod
-
+import com.yuyakaido.android.cardstackview.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), CardStackListener {
@@ -39,7 +37,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         val view = binding.root
         Fresco.initialize(this)
         setContentView(view)
-
         layoutManager = CardStackLayoutManager(this, this).apply {
             setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
             setOverlayInterpolator(LinearInterpolator())
@@ -60,7 +57,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
             override fun onResponse(call: Call<List<Profile>>, response: Response<List<Profile>>) {
                 response.body()?.let {
-                    Log.d("test",response.body().toString())
+                    Log.d("test", response.body().toString())
                     adapter.setProfiles(it)
                 }
             }
@@ -69,9 +66,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         mainActivityViewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
 
         binding.acceptBtn.setOnClickListener {
-            val intent = Intent(this, FavoriteActivity::class.java)
-            startActivity(intent)
-            Toast.makeText(this, "Accepted", Toast.LENGTH_LONG).show()
+          //  val intent = Intent(this, FavoriteActivity::class.java)
+         //   startActivity(intent)
+                Toast.makeText(this, "Accepted", Toast.LENGTH_LONG).show()
 
         }
         binding.rejectBtn.setOnClickListener {
@@ -87,6 +84,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     override fun onCardSwiped(direction: Direction?) {
+
+        val HORIZONTAL: List<Direction> = Arrays.asList(Direction.Left, Direction.Right)
+        layoutManager.setDirections(HORIZONTAL)
+        Log.d("test",direction?.name.toString())
+
 
     }
 
