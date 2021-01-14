@@ -13,8 +13,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="380dp"
         android:layout_height="380dp"
-        android:layout_margin="12dp"
-        android:elevation="12dp"
+        android:layout_margin="10dp"
         android:orientation="vertical">
 
         <RelativeLayout

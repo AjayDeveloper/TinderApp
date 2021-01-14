@@ -1,5 +1,6 @@
 package com.example.tinderapp.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,27 +9,33 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.room.Room
 import com.example.tinderapp.adapter.FavoriteCustomAdapter
-import com.example.tinderapp.database.AppDb
 import com.example.tinderapp.databinding.ActivityMainBinding
 import com.example.tinderapp.model.Profile
 import com.example.tinderapp.retrofit.ApiInterface
+import com.example.tinderapp.utils.ConnectionType
+import com.example.tinderapp.utils.NetworkMonitorUtil
 import com.example.tinderapp.viewmodel.MainActivityViewModel
 import com.facebook.drawee.backends.pipeline.Fresco
-import com.yuyakaido.android.cardstackview.*
+import com.yuyakaido.android.cardstackview.CardStackLayoutManager
+import com.yuyakaido.android.cardstackview.CardStackListener
+import com.yuyakaido.android.cardstackview.Direction
+import com.yuyakaido.android.cardstackview.SwipeableMethod
+
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 
 
 class MainActivity : AppCompatActivity(), CardStackListener {
 
+    private lateinit var listData: Response<List<Profile>>
     private lateinit var mainActivityViewModel: MainActivityViewModel
     private lateinit var binding: ActivityMainBinding
     private val adapter = FavoriteCustomAdapter()
     private lateinit var layoutManager: CardStackLayoutManager
+    private var swapDrirectionToRight = false
+    private val networkMonitor = NetworkMonitorUtil(this)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,10 +44,14 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         val view = binding.root
         Fresco.initialize(this)
         setContentView(view)
+        networkcheck()
+
         layoutManager = CardStackLayoutManager(this, this).apply {
             setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
             setOverlayInterpolator(LinearInterpolator())
         }
+        layoutManager.setCanScrollHorizontal(true)
+        layoutManager.setCanScrollVertical(false)
 
         binding.stackView.layoutManager = layoutManager
         binding.stackView.adapter = adapter
@@ -57,7 +68,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
             override fun onResponse(call: Call<List<Profile>>, response: Response<List<Profile>>) {
                 response.body()?.let {
-                    Log.d("test", response.body().toString())
+                    Log.d("test",response.body().toString())
+                    listData = response
                     adapter.setProfiles(it)
                 }
             }
@@ -66,9 +78,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         mainActivityViewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
 
         binding.acceptBtn.setOnClickListener {
-          //  val intent = Intent(this, FavoriteActivity::class.java)
-         //   startActivity(intent)
-                Toast.makeText(this, "Accepted", Toast.LENGTH_LONG).show()
+            val intent = Intent(this, FavoriteActivity::class.java)
+            startActivity(intent)
+            Toast.makeText(this, "Accepted", Toast.LENGTH_LONG).show()
 
         }
         binding.rejectBtn.setOnClickListener {
@@ -79,25 +91,55 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     }
 
-    override fun onCardDragging(direction: Direction?, ratio: Float) {
+    private fun networkcheck() {
+        networkMonitor.result = { isAvailable, type ->
+            runOnUiThread {
+                when (isAvailable) {
+                    true -> {
+                        when (type) {
+                            ConnectionType.Wifi -> {
+                                Log.i("NETWORK_MONITOR_STATUS", "Wifi Connection")
+                            }
+                            ConnectionType.Cellular -> {
+                                Log.i("NETWORK_MONITOR_STATUS", "Cellular Connection")
+                            }
+                            else -> { }
+                        }
+                    }
+                    false -> {
+                        Log.i("NETWORK_MONITOR_STATUS", "No Connection")
+                    }
+                }
+            }
+        }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        networkMonitor.register()
+    }
+    override fun onCardDragging(direction: Direction?, ratio: Float) {
+        Log.d("onCardDragging", "onCardDragging")
+        if (direction != null)
+        {
+            if (direction.name == "Left")
+                swapDrirectionToRight = false
+            else
+                swapDrirectionToRight = true
+        }
     }
 
     override fun onCardSwiped(direction: Direction?) {
-
-        val HORIZONTAL: List<Direction> = Arrays.asList(Direction.Left, Direction.Right)
-        layoutManager.setDirections(HORIZONTAL)
-        Log.d("test",direction?.name.toString())
-
+        Log.d("onCardDragging", "onCardDragging")
 
     }
 
     override fun onCardRewound() {
-
+        Log.d("onCardDragging", "onCardDragging")
     }
 
     override fun onCardCanceled() {
-
+        Log.d("onCardDragging", "onCardDragging")
     }
 
     override fun onCardAppeared(view: View?, position: Int) {
@@ -105,8 +147,18 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     override fun onCardDisappeared(view: View?, position: Int) {
+        if (swapDrirectionToRight)
+        {
+            var data = listData.body()?.get(position)
+            var name = data?.name
 
+            Toast.makeText(this, "Right Shift Insert Data", Toast.LENGTH_SHORT).show()
+        } else{
+            Toast.makeText(this, "Left Shift Dis Liked", Toast.LENGTH_SHORT).show()
+        }
     }
-
-
+    override fun onStop() {
+        super.onStop()
+        networkMonitor.unregister()
+    }
 }
