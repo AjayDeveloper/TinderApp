@@ -150,7 +150,14 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         if (swapDrirectionToRight)
         {
             var data = listData.body()?.get(position)
+            var id = data?.id
             var name = data?.name
+            var profile_pic = data?.profile_pic
+            var age = data?.age
+            var distance  = data?.distance
+            mainActivityViewModel.insertData(this, id,name, profile_pic,age,distance)
+
+
 
             Toast.makeText(this, "Right Shift Insert Data", Toast.LENGTH_SHORT).show()
         } else{

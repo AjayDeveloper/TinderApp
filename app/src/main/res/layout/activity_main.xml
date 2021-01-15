@@ -28,7 +28,7 @@
 
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/stack_view"
-        android:layout_width="380dp"
+        android:layout_width="400dp"
         android:layout_height="404dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp" />

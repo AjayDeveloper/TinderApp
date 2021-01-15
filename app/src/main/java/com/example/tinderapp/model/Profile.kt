@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Profile(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    var id: Int ,
     val name: String,
     val profile_pic: String,
     val age: Int,
