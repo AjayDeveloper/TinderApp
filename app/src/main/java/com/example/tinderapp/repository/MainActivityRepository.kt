@@ -2,6 +2,7 @@ package com.example.tinderapp.repository
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.tinderapp.database.AppDb
@@ -19,10 +20,6 @@ object MainActivityRepository {
 
     private val serviceSetterGetter = MutableLiveData<ServicesSetterGetter>()
     private var appDb : AppDb? = null
-    private var mainViewModel: LiveData<Profile>? = null
-
-
-
 
     fun getServicesApiCall(): MutableLiveData<ServicesSetterGetter> {
 
@@ -40,10 +37,14 @@ object MainActivityRepository {
             ) {
 
                 Log.v("DEBUG : ", response.body().toString())
+                   try {
+                       val data = response.body()
+                       val msg = data!!.results
+                       serviceSetterGetter.value = ServicesSetterGetter(msg)
 
-                    val data = response.body()
-                    val msg = data!!.results
-                    serviceSetterGetter.value = ServicesSetterGetter(msg)
+                   }catch (e : Exception){
+                       e.toString()
+                   }
 
             }
         })

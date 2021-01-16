@@ -27,20 +27,18 @@ class FavoriteActivity : AppCompatActivity() {
         setUpRecyclerView()
 
 
-
     }
 
     private fun setUpRecyclerView() {
 
-        recyclerView        = activityFavoriteMainBinding.recyclerView
+        recyclerView = activityFavoriteMainBinding.recyclerView
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val thread = Thread(Runnable {
 
-            var listData =  mainActivityViewModel.getListData(this)
+            var listData = mainActivityViewModel.getListData(this)
 
-            //mfavorite!!.setProfiles(listData)
 
             setData(listData)
 
@@ -50,11 +48,12 @@ class FavoriteActivity : AppCompatActivity() {
     }
 
     private fun setData(listData: List<Profile>) {
-        var layoutManager   = LinearLayoutManager(this)
+        var layoutManager = LinearLayoutManager(this)
 
         recyclerView.adapter = WishlistAdapter(listData, this)
 
-        val dividerItemDecoration = DividerItemDecoration(recyclerView.context, layoutManager.getOrientation())
+        val dividerItemDecoration =
+            DividerItemDecoration(recyclerView.context, layoutManager.getOrientation())
 
         recyclerView.addItemDecoration(dividerItemDecoration)
 

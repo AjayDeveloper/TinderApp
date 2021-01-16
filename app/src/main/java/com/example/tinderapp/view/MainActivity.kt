@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         binding.acceptBtn.setOnClickListener {
             val intent = Intent(this, FavoriteActivity::class.java)
             startActivity(intent)
-          //  Toast.makeText(this, "Accepted", Toast.LENGTH_SHORT).show()
+
 
         }
         binding.rejectBtn.setOnClickListener {
@@ -96,11 +96,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         when (type) {
                             ConnectionType.Wifi -> {
                                 Log.i("NETWORK_MONITOR_STATUS", "Wifi Connection")
-                               // Toast.makeText(this,"Wifi Connection",Toast.LENGTH_SHORT).show()
+
                             }
                             ConnectionType.Cellular -> {
                                Log.i("NETWORK_MONITOR_STATUS", "Cellular Connection")
-                                //Toast.makeText(this,"Cellular Connection",Toast.LENGTH_SHORT).show()
+
                             }
                             else -> { }
                         }

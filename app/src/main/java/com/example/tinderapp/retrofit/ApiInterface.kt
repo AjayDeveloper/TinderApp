@@ -12,19 +12,4 @@ interface ApiInterface {
     @GET("?results=10")
     fun getServices(): Call<ServicesSetterGetter>
 
-    @GET("profiles")
-    fun getProfiles(): Call<List<Profile>>
-
-
-
-    companion object {
-
-        operator fun invoke(): ApiInterface {
-            return Retrofit.Builder()
-                .baseUrl("https://api.simplifiedcoding.in/course-apis/tinder/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(ApiInterface::class.java)
-        }
-    }
 }
