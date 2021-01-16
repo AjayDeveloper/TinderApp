@@ -7,12 +7,12 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.example.tinderapp.adapter.FavoriteCustomAdapter
 import com.example.tinderapp.databinding.ActivityMainBinding
 import com.example.tinderapp.model.Profile
-import com.example.tinderapp.retrofit.ApiInterface
 import com.example.tinderapp.utils.ConnectionType
 import com.example.tinderapp.utils.NetworkMonitorUtil
 import com.example.tinderapp.viewmodel.MainActivityViewModel
@@ -22,8 +22,6 @@ import com.yuyakaido.android.cardstackview.CardStackListener
 import com.yuyakaido.android.cardstackview.Direction
 import com.yuyakaido.android.cardstackview.SwipeableMethod
 
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 
 
@@ -37,7 +35,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private var swapDrirectionToRight = false
     private val networkMonitor = NetworkMonitorUtil(this)
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -45,6 +42,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         Fresco.initialize(this)
         setContentView(view)
         networkcheck()
+        mainActivityViewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
 
         layoutManager = CardStackLayoutManager(this, this).apply {
             setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
@@ -61,30 +59,26 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             }
         }
 
-        ApiInterface().getProfiles().enqueue(object : Callback<List<Profile>> {
-            override fun onFailure(call: Call<List<Profile>>, t: Throwable) {
 
-            }
 
-            override fun onResponse(call: Call<List<Profile>>, response: Response<List<Profile>>) {
-                response.body()?.let {
-                    Log.d("test",response.body().toString())
-                    listData = response
-                    adapter.setProfiles(it)
-                }
-            }
-        })
 
         mainActivityViewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        mainActivityViewModel.getUser()!!.observe(this, Observer { serviceSetterGetter ->
+            val msg = serviceSetterGetter
+            adapter.setProfiles(msg.results)
+            Log.d("test",msg.results.toString())
+
+
+        })
 
         binding.acceptBtn.setOnClickListener {
             val intent = Intent(this, FavoriteActivity::class.java)
             startActivity(intent)
-            Toast.makeText(this, "Accepted", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Accepted", Toast.LENGTH_SHORT).show()
 
         }
         binding.rejectBtn.setOnClickListener {
-            Toast.makeText(this, "Rejected", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Rejected", Toast.LENGTH_SHORT).show()
 
         }
 
@@ -99,15 +93,18 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         when (type) {
                             ConnectionType.Wifi -> {
                                 Log.i("NETWORK_MONITOR_STATUS", "Wifi Connection")
+                                Toast.makeText(this,"Wifi Connection",Toast.LENGTH_SHORT).show()
                             }
                             ConnectionType.Cellular -> {
-                                Log.i("NETWORK_MONITOR_STATUS", "Cellular Connection")
+                               Log.i("NETWORK_MONITOR_STATUS", "Cellular Connection")
+                                Toast.makeText(this,"Cellular Connection",Toast.LENGTH_SHORT).show()
                             }
                             else -> { }
                         }
                     }
                     false -> {
                         Log.i("NETWORK_MONITOR_STATUS", "No Connection")
+                        Toast.makeText(this,"No Connection",Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -122,10 +119,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         Log.d("onCardDragging", "onCardDragging")
         if (direction != null)
         {
-            if (direction.name == "Left")
-                swapDrirectionToRight = false
-            else
-                swapDrirectionToRight = true
+            swapDrirectionToRight = direction.name != "Left"
         }
     }
 
@@ -149,19 +143,22 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     override fun onCardDisappeared(view: View?, position: Int) {
         if (swapDrirectionToRight)
         {
-            var data = listData.body()?.get(position)
-            var id = data?.id
-            var name = data?.name
-            var profile_pic = data?.profile_pic
-            var age = data?.age
-            var distance  = data?.distance
-            mainActivityViewModel.insertData(this, id,name, profile_pic,age,distance)
+            if (this::listData.isInitialized){
+                var data = listData.body()?.get(position)
+                var id = data?.id
+                var name = data?.name
+                var profile_pic = data?.profile_pic
+                var age = data?.age
+                var distance  = data?.distance
+                mainActivityViewModel.insertData(this, id,name, profile_pic,age,distance)
 
+            }else{
+                Toast.makeText(this,"Something went wrong",Toast.LENGTH_SHORT).show()
+            }
 
-
-            Toast.makeText(this, "Right Shift Insert Data", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Liked", Toast.LENGTH_SHORT).show()
         } else{
-            Toast.makeText(this, "Left Shift Dis Liked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Disliked", Toast.LENGTH_SHORT).show()
         }
     }
     override fun onStop() {

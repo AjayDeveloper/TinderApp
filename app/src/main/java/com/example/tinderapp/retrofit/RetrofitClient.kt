@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    const val MainServer = "https://api.simplifiedcoding.in/course-apis/tinder/"
+    const val MainServer = "https://randomuser.me/api/"
 
     val retrofitClient: Retrofit.Builder by lazy {
 

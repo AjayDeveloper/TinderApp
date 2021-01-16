@@ -8,6 +8,7 @@ import androidx.room.Database
 import com.example.tinderapp.database.AppDb
 import com.example.tinderapp.model.Profile
 import com.example.tinderapp.model.ServicesSetterGetter
+import com.example.tinderapp.model.SetterProfile
 import com.example.tinderapp.retrofit.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -21,6 +22,9 @@ object MainActivityRepository {
     private val serviceSetterGetter = MutableLiveData<ServicesSetterGetter>()
     private var appDb : AppDb? = null
     private var mainViewModel: LiveData<Profile>? = null
+
+
+
 
     fun getServicesApiCall(): MutableLiveData<ServicesSetterGetter> {
 
@@ -39,16 +43,19 @@ object MainActivityRepository {
 
                 Log.v("DEBUG : ", response.body().toString())
 
-                val data = response.body()
+                    val data = response.body()
+                    val msg = data!!.results
+                    serviceSetterGetter.value = ServicesSetterGetter(msg)
 
-                val msg = data!!.message
-
-                serviceSetterGetter.value = ServicesSetterGetter(msg)
             }
         })
 
         return serviceSetterGetter
     }
+
+
+
+
 
 
     fun initializeDB(context: Context) : AppDb {

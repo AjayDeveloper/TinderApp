@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.tinderapp.model.Profile
 
-@Database(entities = [(Profile::class)],version = 1)
+@Database(entities = [(Profile::class)],version = 1,exportSchema = false)
 abstract class AppDb : RoomDatabase() {
 
     abstract fun profileDao(): ProfileDao

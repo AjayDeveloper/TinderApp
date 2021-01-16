@@ -16,13 +16,16 @@
             android:id="@+id/rejectBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:visibility="gone"
+            android:contentDescription="@string/recject"
             android:background="@drawable/ic_baseline_cancel_24" />
 
         <ImageButton
             android:id="@+id/acceptBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginStart="30dp"
+            android:contentDescription="@string/accept"
+            android:layout_gravity="center"
             android:background="@drawable/ic_baseline_favorite_24" />
     </LinearLayout>
 

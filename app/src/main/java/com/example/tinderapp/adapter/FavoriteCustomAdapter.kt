@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tinderapp.R
 import com.example.tinderapp.databinding.CardViewProfileBinding
 import com.example.tinderapp.model.Profile
+import com.example.tinderapp.model.ServicesSetterGetter
 
 
- class FavoriteCustomAdapter : RecyclerView.Adapter<FavoriteCustomAdapter.ViewHolder>() {
+class FavoriteCustomAdapter : RecyclerView.Adapter<FavoriteCustomAdapter.ViewHolder>() {
 
-    private var profiles: List<Profile>? = null
+    private var profiles: List<ServicesSetterGetter.Result>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
         DataBindingUtil.inflate(
@@ -26,12 +27,12 @@ import com.example.tinderapp.model.Profile
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         profiles?.let {
-            holder.binding.profile = it[position]
+            holder.binding.result= it.get(position)
             holder.binding.executePendingBindings()
         }
     }
 
-    fun setProfiles(profiles: List<Profile>) {
+    fun setProfiles(profiles: List<ServicesSetterGetter.Result>) {
         this.profiles = profiles
         notifyDataSetChanged()
     }

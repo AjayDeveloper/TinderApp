@@ -9,7 +9,7 @@ import retrofit2.http.GET
 
 
 interface ApiInterface {
-    @GET("services")
+    @GET("?results=10")
     fun getServices(): Call<ServicesSetterGetter>
 
     @GET("profiles")

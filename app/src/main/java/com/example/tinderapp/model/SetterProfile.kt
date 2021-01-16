@@ -1,8 +1,8 @@
 package com.example.tinderapp.model
 
-data class ServicesSetterGetter(
-    val results: List<Result>
-    //val info: Info
+data class SetterProfile(
+    val results: List<Result>,
+    val info: Info
 ) {
     data class Result(
         val gender: String,
@@ -29,12 +29,12 @@ data class ServicesSetterGetter(
             val city: String,
             val state: String,
             val country: String,
-            val postcode: String,
+            val postcode: Int,
             val coordinates: Coordinates,
             val timezone: Timezone
         ) {
             data class Street(
-                val number: String,
+                val number: Int,
                 val name: String
             )
 
@@ -61,12 +61,12 @@ data class ServicesSetterGetter(
 
         data class Dob(
             val date: String,
-            val age: String
+            val age: Int
         )
 
         data class Registered(
             val date: String,
-            val age: String
+            val age: Int
         )
 
         data class Id(
@@ -83,9 +83,8 @@ data class ServicesSetterGetter(
 
     data class Info(
         val seed: String,
-        val results: String,
-        val page: String,
+        val results: Int,
+        val page: Int,
         val version: String
     )
-
 }
