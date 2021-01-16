@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import com.example.tinderapp.adapter.FavoriteCustomAdapter
 import com.example.tinderapp.databinding.ActivityMainBinding
 import com.example.tinderapp.model.Profile
+import com.example.tinderapp.model.ServicesSetterGetter
 import com.example.tinderapp.utils.ConnectionType
 import com.example.tinderapp.utils.NetworkMonitorUtil
 import com.example.tinderapp.viewmodel.MainActivityViewModel
@@ -27,7 +28,7 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity(), CardStackListener {
 
-    private lateinit var listData: Response<List<Profile>>
+    private var listData: ServicesSetterGetter? = null
     private lateinit var mainActivityViewModel: MainActivityViewModel
     private lateinit var binding: ActivityMainBinding
     private val adapter = FavoriteCustomAdapter()
@@ -65,7 +66,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         mainActivityViewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
         mainActivityViewModel.getUser()!!.observe(this, Observer { serviceSetterGetter ->
             val msg = serviceSetterGetter
+            listData = serviceSetterGetter
             adapter.setProfiles(msg.results)
+
             Log.d("test",msg.results.toString())
 
 
@@ -74,7 +77,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         binding.acceptBtn.setOnClickListener {
             val intent = Intent(this, FavoriteActivity::class.java)
             startActivity(intent)
-            Toast.makeText(this, "Accepted", Toast.LENGTH_SHORT).show()
+          //  Toast.makeText(this, "Accepted", Toast.LENGTH_SHORT).show()
 
         }
         binding.rejectBtn.setOnClickListener {
@@ -93,11 +96,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         when (type) {
                             ConnectionType.Wifi -> {
                                 Log.i("NETWORK_MONITOR_STATUS", "Wifi Connection")
-                                Toast.makeText(this,"Wifi Connection",Toast.LENGTH_SHORT).show()
+                               // Toast.makeText(this,"Wifi Connection",Toast.LENGTH_SHORT).show()
                             }
                             ConnectionType.Cellular -> {
                                Log.i("NETWORK_MONITOR_STATUS", "Cellular Connection")
-                                Toast.makeText(this,"Cellular Connection",Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(this,"Cellular Connection",Toast.LENGTH_SHORT).show()
                             }
                             else -> { }
                         }
@@ -143,18 +146,14 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     override fun onCardDisappeared(view: View?, position: Int) {
         if (swapDrirectionToRight)
         {
-            if (this::listData.isInitialized){
-                var data = listData.body()?.get(position)
-                var id = data?.id
-                var name = data?.name
-                var profile_pic = data?.profile_pic
-                var age = data?.age
-                var distance  = data?.distance
-                mainActivityViewModel.insertData(this, id,name, profile_pic,age,distance)
 
-            }else{
-                Toast.makeText(this,"Something went wrong",Toast.LENGTH_SHORT).show()
-            }
+                var data = listData?.results?.get(position)
+                var name = data?.name?.first
+                var profile_pic = data?.picture?.medium
+                var age = data?.dob?.age
+                var distance  = data?.location?.city
+                mainActivityViewModel.insertData(this, name, profile_pic,age,distance)
+
 
             Toast.makeText(this, "Liked", Toast.LENGTH_SHORT).show()
         } else{

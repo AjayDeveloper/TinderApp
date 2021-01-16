@@ -6,10 +6,13 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Profile(
-    @PrimaryKey(autoGenerate = true)
-    var id: Int ,
+    @PrimaryKey(autoGenerate = true) val id : Int,
     val name: String,
     val profile_pic: String,
-    val age: Int,
-    val distance: Int,
+    val age: String,
+    val distance: String,
 )
+{
+    constructor(name: String,profile_pic: String,age: String,distance: String) : this(0,name,profile_pic,age,distance)
+
+}
