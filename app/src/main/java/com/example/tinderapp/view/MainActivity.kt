@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
                 var data = listData?.results?.get(position)
                 var name = data?.name?.first
-                var profile_pic = data?.picture?.medium
+                var profile_pic = data?.picture?.thumbnail
                 var age = data?.dob?.age
                 var distance  = data?.location?.city
                 mainActivityViewModel.insertData(this, name, profile_pic,age,distance)
